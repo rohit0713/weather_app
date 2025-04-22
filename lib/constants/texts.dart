@@ -14,4 +14,6 @@ class Texts {
   static String get HUMIDITY=>'Humidity';
 
   static String get SELECT_LOC=>'Please select location to get weather report';
+
+  static String get SEARCH_LOC=>'Search location...';
 }

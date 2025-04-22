@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/constants/texts.dart';
 import 'package:weather_app/core/helper/helper.dart';
+import 'package:weather_app/core/styles/app_colors.dart';
 import 'package:weather_app/core/utils/app_text.dart';
 import 'package:weather_app/features/location_search/bloc/search_bloc.dart';
 import 'package:weather_app/features/location_search/bloc/search_event.dart';
@@ -24,16 +25,19 @@ class _WeatherPageState extends State<WeatherPage> {
 
   @override
   void initState() {
+    // Request current location when page initializes
     context.read<SearchBloc>().add(OnGetCurrentLocation());
     super.initState();
   }
 
+  // Dispatch weather event using lat/lng from current location
   _getWeatherData(CurrentLocationSuccessState state) {
     context.read<WeatherBloc>().add(
       OnGetWeatherEvent(latitude: state.latitude, longitude: state.longitude),
     );
   }
 
+  // Update location when user selects one from search
   _setLocation(double latitude, double longitude, String placeName) {
     context.read<SearchBloc>().add(
       OnLocationSelect(
@@ -53,6 +57,7 @@ class _WeatherPageState extends State<WeatherPage> {
         child: Stack(
           fit: StackFit.expand,
           children: [
+            // Background image
             Image.asset('assets/bg_image.png', fit: BoxFit.fill),
             BlocConsumer<SearchBloc, SearchState>(
               listener: (context, state) {
@@ -66,14 +71,14 @@ class _WeatherPageState extends State<WeatherPage> {
               builder: (context, state) {
                 if (state is CurrentLocationLoadingState) {
                   return Center(
-                    child: CircularProgressIndicator(color: Colors.white),
+                    child: CircularProgressIndicator(color: AppColors.appWhite),
                   );
                 }
                 return BlocBuilder<WeatherBloc, WeatherState>(
                   builder: (context, state) {
                     if (state is WeatherLoadingState) {
                       return Center(
-                        child: CircularProgressIndicator(color: Colors.white),
+                        child: CircularProgressIndicator(color: AppColors.appWhite),
                       );
                     }
                     return SingleChildScrollView(
@@ -82,6 +87,7 @@ class _WeatherPageState extends State<WeatherPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+                            // Display location
                             AppText(
                               title:
                                   placeName.isEmpty
@@ -91,7 +97,7 @@ class _WeatherPageState extends State<WeatherPage> {
                               fontWeight: FontWeight.w500,
                               textAlign: TextAlign.center,
                             ),
-
+                            // Handle failure state
                             if (state is WeatherFailureState) ...{
                               Center(
                                 child: AppText(
@@ -101,7 +107,7 @@ class _WeatherPageState extends State<WeatherPage> {
                                 ),
                               ),
                             },
-
+                            // Show weather data if available
                             if (state is WeatherSuccessState) ...{
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -125,6 +131,7 @@ class _WeatherPageState extends State<WeatherPage> {
                                         '',
                                   ),
                                   const SizedBox(height: 30),
+                                  // Hourly forecast
                                   SizedBox(
                                     height: 116,
                                     width: double.infinity,
@@ -165,6 +172,7 @@ class _WeatherPageState extends State<WeatherPage> {
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
+                                  // Daily forecast
                                   ListView.separated(
                                     physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
@@ -190,7 +198,7 @@ class _WeatherPageState extends State<WeatherPage> {
                 );
               },
             ),
-
+            // Search button
             Positioned(
               top: 20,
               right: 20,
@@ -210,7 +218,7 @@ class _WeatherPageState extends State<WeatherPage> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8),
-                    child: Icon(Icons.search, color: Colors.black),
+                    child: Icon(Icons.search, color: AppColors.appBlack),
                   ),
                 ),
               ),
@@ -221,11 +229,12 @@ class _WeatherPageState extends State<WeatherPage> {
     );
   }
 
+  // Weather detail metrics (humidity, wind speed, etc.)
   _weatherDetails(WeatherModel data) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white10,
+        color: AppColors.appWhite10,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
@@ -273,6 +282,7 @@ class _WeatherPageState extends State<WeatherPage> {
     );
   }
 
+  // Reusable detail item widget
   _detailItem(String title, String value) {
     return Column(
       spacing: 4,
@@ -285,11 +295,12 @@ class _WeatherPageState extends State<WeatherPage> {
     );
   }
 
+  // Hourly weather item
   _hourlyData(Hourly? data) {
     String time = formatTimeFromTimestamp(data?.dt);
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white10,
+        color: AppColors.appWhite10,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
@@ -316,11 +327,12 @@ class _WeatherPageState extends State<WeatherPage> {
     );
   }
 
+  // Daily forecast item
   _dailyData(Daily? data) {
     String date = getDayAndDateFromTimestamp(data?.dt);
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white10,
+        color: AppColors.appWhite10,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(

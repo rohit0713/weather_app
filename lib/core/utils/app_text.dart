@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:weather_app/core/styles/app_colors.dart';
 
 class AppText extends StatelessWidget {
   final String title;
@@ -24,7 +25,7 @@ class AppText extends StatelessWidget {
       title,
       textAlign: textAlign,
       style: TextStyle(
-        color: color??Colors.white,
+        color: color??AppColors.appWhite,
         fontSize: fontSize,
         fontWeight: fontWeight,
         overflow: textOverflow,
